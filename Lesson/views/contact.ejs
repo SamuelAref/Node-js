@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+
+body{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+
+background-color: skyblue;
+font-family: Verdana;
+color: #fff;
+padding: 30px;
+
+}
+
+h1{
+
+font-size: 48px;
+text-transform: uppercase;
+letter-spacing: 2px;
+text-align: center ;
+}
+
+p{
+
+font-size: 16px;
+text-align: center;
+}
+
+form{
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+    </style>
+
+</head>
+<body>
+
+    <%- include ('partials/nav.ejs') -%>
+
+
+
+    <h1>Contact Page</h1>
+    <p>you won't find a website better anywhere else!</p>
+    <!-- <p><%= qs.dept %></p>  -->
+
+    <form id="contact-form" method="POST" action="/contact">
+
+        <label for="who">Who do you want to contact?</label>
+        <input type="text" name = "who" value="<%= qs.name %>">
+        <label for="department">Which department?</label>
+        <input type="text" name = "department" value="<%= qs.dept %>">
+        <label for="email">Your email</label>
+        <input type="email" name = "email">
+        <input type="submit" value="submit">
+    </form>
+
+
+</body>
+</html>

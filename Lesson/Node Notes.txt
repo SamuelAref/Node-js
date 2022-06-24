@@ -1,0 +1,834 @@
+Node JS 
+
+ Is platform to run javascript 
+
+
+
+ JavaScript Engines 
+
+   - takes javascript and converts it into something it does understand (machine code)
+   so v8 engine is embeded in node.js (is built using c++)
+
+
+
+ Codes (global object)
+
+    console.log(__dirname);
+    console.log(__filename);
+
+
+
+ Function Expressions
+
+   a bit different syntax 
+   and you can call functions within functions 
+
+            function callFunction(fun) {
+
+            fun();
+        }
+        let sayBye = function () {
+
+            console.log('bye');
+        };
+
+
+        callFunction(sayBye);
+
+
+
+ Modules and Require()
+
+   a module is essentially a javascript file
+
+   require use to make a module usable everywhere
+
+   steps - we create a module with a reusable element 
+         - then we export it 
+         - then we receive it by a variable and then with require 
+
+
+
+ Module Patterns
+
+    to export efficiently we use module.exports.functionname .....
+
+
+    e.g module file 
+
+                  module.exports.counter = function (arr) {
+
+              return 'there are ' + arr.length + ' elements';
+
+
+          }
+
+
+          module.exports.adder = function (a, b) {
+
+              return `sum of ${a} and ${b} is ${a + b}`;
+          }
+
+          module.exports.pi = 3.142;
+
+
+
+
+
+    app file 
+      
+
+        let stuff = require('./stuff');
+
+
+
+
+    console.log(stuff.counter(['sami', 'hi']));
+    console.log(stuff.adder(2, 3));
+
+
+
+ Node event Emitter (module)
+
+        to import a general module we write the name not the path 
+
+        so we create an event emmiter like the below example 
+
+
+        let events = require('events');
+
+        let myEmitter = new events.EventEmitter();
+
+        myEmitter.addListener('someEvent', function (message) {
+
+            console.log(message);
+        })
+
+
+
+        myEmitter.emit('someEvent', 'yaaaaasss');
+
+  
+
+    util Module (to inherit things)
+
+                example 
+
+                  let events = require('events');
+          let util = require('util');
+
+
+          let Person = function (name) {
+
+              this.name = name;
+          }
+
+
+          util.inherits(Person, events.EventEmitter);
+
+
+
+          let james = new Person('james');
+          let sami = new Person('sami');
+          let lupita = new Person('lupita');
+
+
+          let people = [james, sami, lupita];
+
+
+          people.forEach(function (person) {
+
+              person.on('speak', function (mssg) {
+
+                  console.log(person.name + ' said : ' + mssg);
+              })
+          })
+
+
+          james.emit('speak', 'hey dudes');
+
+
+
+ Reading and writing files(fs)
+
+    
+     after node js version 10,  you have to use empty return function after it 
+
+          let fs = require('fs');
+
+          // synchronous versions 
+
+          // read a file 
+          // fs take the file name and the file type
+          // let read = fs.readFileSync('readMe.txt', 'utf-8');
+
+          // fs.writeFileSync('writeMe.txt', read); //creates a file if not existant 
+
+          let fs = require('fs');
+
+          //async
+
+          fs.readFile('readMe.txt', 'utf-8', function (err, data) {
+
+              fs.writeFile('writeMe.txt', data, function () {
+
+                  if (err) console.log(err);
+              });
+          });
+
+
+          // to delete a file fs.unlink('filename');
+
+              // like this  better works idk why
+                
+                  let fs = require('fs');
+
+                  fs.unlink('w.txt', function () {
+
+                      if (1 == 1) {
+
+                      }
+                  })
+
+
+ 
+ Creating & Removing Directories 
+
+        let fs = require('fs');
+
+
+        // synchronous
+
+        fs.mkdirSync('stuff');
+        fs.rmdirSync('stuff');
+
+        // asynchronous
+
+
+        fs.mkdir('stuff', function () {
+
+            fs.readFile('readMe.txt', 'utf-8', function (err, data) {
+
+                fs.writeFile('./stuff/writeMe.txt', data, function () {
+
+                    if (err) {
+
+                        console.log(err);
+                    }
+                });
+
+            })
+        });
+
+        fs.unlink('./stuff/writeMe.txt', function () {
+
+            if (1 == 1) {
+
+                fs.rmdir('stuff', () => { });
+            }
+
+        });
+
+        fs.unlink('./stuff/writeMe.txt', () => { });
+        fs.rmdir('stuff', () => { });
+
+
+
+ Clients and Servers 
+
+     
+     Protocols - are set of communication rules, that two sides (client and server) agree to use when communicating
+
+               - socket is opened between them 
+
+     ports - to know the request is meant for node.js, node.js listens to specifc ports 
+    
+
+
+ Creating a Server 
+      
+      first we require http
+
+      we add the create server method with a function that takes request(req) and the res(response)
+
+      in this function we return what we desire 
+
+      then in the end we specify a port to listen to
+
+         
+
+            let http = require('http');
+
+            let server = http.createServer(function (req, res) {
+
+                console.log('request was made : ' + req.url);
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end('Hey ninjas');
+
+            });
+
+
+            server.listen(3000, '127.0.0.1');
+            console.log('im listening to 3000');
+
+
+
+ Streams and Buffers 
+   
+    The real story of node.js candy Mountain 
+
+
+    Buffers 
+
+    - Temporary storage spot for a chunk of data that is being 
+      transferred from one place to another 
+
+    - The buffer is filled with data, then passed along 
+
+    - Transfer small chunks of data at a time 
+      
+    
+    Stream 
+
+     path for buffer 
+
+
+
+ Readable Streams 
+
+   - Writable streams - allow node js to write data to a stream 
+   - Readable sterams - allow node js to read data from a stream 
+   - Duplex - can read and write to a stream 
+   
+
+   how to recieve data in chunks (buffers)
+
+
+   first require fs 
+
+    then create Read stream 
+
+    then output it 
+
+
+
+        let fs = require('fs');
+
+
+        let readStream = fs.createReadStream(__dirname + '/read.txt', 'utf-8');
+
+
+        readStream.on('data', function (chunk) {
+
+            console.log('new chunck received');
+            console.log(chunk);
+
+        })
+
+
+
+ Writable Streams 
+
+
+   pretty straight forward, we just write to a file and send the chunk with write operator
+
+            let fs = require('fs');
+
+
+            let readStream = fs.createReadStream(__dirname + '/read.txt', 'utf-8');
+            let writeStream = fs.createWriteStream(__dirname + '/writeMe.text');
+
+            readStream.on('data', function (chunk) {
+
+                console.log('new chunck received');
+
+                writeStream.write(chunk);
+            })
+
+
+
+ Pipes 
+
+    piping transfers from readable to writable so the above code can be changed to 
+
+       let fs = require('fs');
+
+
+        let readStream = fs.createReadStream(__dirname + '/read.txt', 'utf-8');
+        let writeStream = fs.createWriteStream(__dirname + '/writeMe.text');
+
+        readStream.pipe(writeStream);
+
+  
+
+    pipes in servers 
+
+            let http = require('http');
+            let fs = require('fs');
+
+            let server = http.createServer(function (req, res) {
+
+                console.log('request was made : ' + req.url);
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+
+
+                let readStream = fs.createReadStream(__dirname + '/read.txt', 'utf-8');
+
+                readStream.pipe(res);
+
+            });
+
+
+            server.listen(3000, '127.0.0.1');
+            console.log('im listening to 3000');
+
+
+ 
+ Serving HTML pages
+
+     - here we created an html file then we edited the  css inside
+     - then we included it in the server content type and directory 
+
+      Note: in sending html pages, the css won't automatically be sent
+
+
+
+
+        let http = require('http');
+        let fs = require('fs');
+
+
+
+        let server = http.createServer(function (req, res) {
+
+            console.log('request was made : ' + req.url);
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+
+
+            let readStream = fs.createReadStream(__dirname + '/index.html', 'utf-8');
+
+            readStream.pipe(res);
+
+        });
+
+
+        server.listen(3000, '127.0.0.1');
+        console.log('im listening to 3000');
+            
+
+
+ Serving JSON 
+
+
+        in serving json, we only need to stringify the object 
+
+
+        let http = require('http');
+        let fs = require('fs');
+
+
+
+        let server = http.createServer(function (req, res) {
+
+            console.log('request was made : ' + req.url);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+
+            let obj = {
+
+                name: 'sami',
+                job: 'ninja',
+                age: 24
+            }
+
+            res.end(JSON.stringify(obj))
+
+        });
+
+
+        server.listen(3000, '127.0.0.1');
+        console.log('im listening to 3000');
+
+
+
+
+ Routing (Basic )
+
+    fs for file system 
+    res for object files 
+
+
+
+                    let http = require('http');
+                    let fs = require('fs');
+
+
+
+                    let server = http.createServer(function (req, res) {
+
+                    console.log('request was made : ' + req.url);
+
+                    if (req.url === '/home' || req.url === '/') {
+
+                        res.writeHead(200, { 'Content-type': 'text/html' });
+                        fs.createReadStream(__dirname + '/index.html').pipe(res);
+                    }
+
+                    else if (req.url === '/contact') {
+
+                        res.writeHead(200, { 'Content-type': 'text/html' });
+                        fs.createReadStream(__dirname + '/contact.html').pipe(res);
+                    }
+
+                    else if (req.url === '/api/ninja') {
+
+                        let obj = {
+
+                            name: 'sami',
+                            job: 'ninja',
+                            age: 24
+                        }
+
+                        res.writeHead(200, { 'Content-type': 'application/json' });
+                        res.end(JSON.stringify(obj));
+
+
+                    }
+
+                    else {
+
+                        res.writeHead(200, { 'Content-type': 'text/html' });
+                        fs.createReadStream(__dirname + '/NotFound.html').pipe(res);
+
+
+                    }
+                });
+
+
+                server.listen(3000, '127.0.0.1');
+                console.log('im listening to 3000');
+
+
+
+ NPM (node package manager)
+
+     website  for packages - npmjs.com
+
+     to install express packages by writng nmp install package name 
+     
+     example for express, we use 
+          
+          npm install express 
+
+
+
+ Package.json 
+
+    npm init to setup package.json 
+
+
+
+ Nodemon package
+
+    used to monitor your application files 
+    restarts the server if any change is founc (we don't need to refresh the browser after every change)
+    we don't need ot write node filename every time 
+    npm install -g nodemon ---(g means global)
+
+    after installation we start it by nodemon filename 
+
+
+ 
+ intro to express 
+
+    - easy and flexible routing system 
+    - integrates with many templating engines 
+    - contains a middleware framework
+
+
+    simple routing example 
+
+      first we require the express package 
+
+      then implement a get for this example 
+
+
+            let express = require('express');
+            let app = express();
+            app.get('/', function (req, res) {
+
+
+                res.send('this is the homepage');
+
+            });
+
+            app.get('/contact', function (req, res) {
+
+
+                res.send('this is the contact');
+
+            });
+
+
+            app.listen(3000); //listen to port
+
+
+
+
+ Route parameters in express 
+
+    means dynamic requrests like contact/ id  it is parameter just like react
+
+
+
+    example 
+      
+            let express = require('express');
+
+            let app = express();
+            app.get('/', function (req, res) {
+
+
+                res.send('this is the homepage');
+
+            });
+
+            app.get('/contact', function (req, res) {
+
+
+                res.send('this is the contact');
+
+            });
+
+
+
+            app.get('/profile/:id', function (req, res) {
+
+                res.send('you requested to see a profile with the id of ' + req.params.id);
+            })
+
+
+            app.listen(3000); //listen to port
+
+
+
+
+ templating engines  part 1
+    
+    to inject data in files to  be sent 
+
+    EJS template 
+
+    to install we use npm install ejs 
+
+    then we tell express we want to use it 
+
+
+
+
+ templating engines part 2 
+
+      note that when writing code like forEach or something,
+      we use <% %> there is no = 
+
+
+
+      so to conclude with example 
+
+      the app.js file 
+
+
+            let express = require('express');
+
+            let app = express();
+
+
+            app.set('view engine', 'ejs'); //tell express we want to use ejs, then we create a view folder 
+
+
+            app.get('/', function (req, res) {
+
+
+                res.sendFile(__dirname + '/index.html');
+
+            });
+
+            app.get('/contact', function (req, res) {
+
+
+                res.send('this is the contact');
+
+            });
+
+
+
+
+            app.get('/profile/:id', function (req, res) {
+
+                let data = { age: 29, job: 'ninja', hobbies: ['eating', 'running', 'fishing'] };
+
+                res.render('profile', { person: req.params.id, data: data }); //no need to specify path because it knows to look in view folder 
+                // so we sent the data id to the profile file  and look at how we outputed the data in profie file we opened <%= profile %>
+            })
+
+
+            app.listen(3000); //listen to port
+
+
+
+
+      the view/ profile.ejs file 
+
+
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+
+                    <style>
+
+                body{
+
+
+                background-color: skyblue;
+                font-family: Verdana;
+                color: #fff;
+                padding: 30px;
+
+                }
+
+                h1{
+
+                font-size: 48px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-align: center ;
+                }
+
+                h2{
+
+                    font-size: 30px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-align: center ;
+
+
+                }
+
+                p, li{
+
+                font-size: 16px;
+                text-align: center;
+                }
+                    </style>
+
+                </head>
+                <body>
+
+
+                    <h1>Welcome to the number  <%= person %> website on the net</h1>
+                    <p> <strong> Age :  </strong><%= data.age %></p>
+
+                    <h2>Hobbies</h2>
+                    <ul>
+
+                        <% data.hobbies.forEach(function(item){ %>
+
+                            <li><%= item %></li>
+
+
+                        <%}) %>
+                    </ul>
+                    
+                </body>
+                </html>
+
+
+
+
+ Partial views  (templates)
+
+     note: in including other ejs files to an ejs file use <%- include ('ejs file path') -%> you have to put it in quotation and brackets 
+
+
+
+ Middleware and static files 
+
+  Middleware 
+
+    - the code that runs between the request and the  response
+
+
+  Static files are the files that don't change dynamically 
+    example the css file  
+
+
+     so to add css files to an ejs file we simply 
+     use the express package 
+
+
+      in app.js file 
+
+     example 1 - without expresss 
+
+         // app.use('/assets', function(req, res, next){
+
+        //     next();  // next is used to continue the middle ware to the next 
+        // })
+
+
+
+     example 2 - with express , this is better  
+                    
+                    so here what we did was we used express to allow 
+                    any request made by any file to access files in the assets folder 
+
+                    so if the index.ejs file links a css file from the assets folder, then 
+                    it will make a request to access that file from the browser, here is where 
+                    middle ware comes in.
+
+            app.use('/assets', express.static('assets')); // we can use the css files this way
+         
+
+    
+ Query Strings 
+
+    is an additional data added to an html page 
+
+    example 
+
+       3000/contact?person=sam&dept=electrical
+     
+     in this example we tried to access the above link
+      we handled that link using 
+        
+    res.render('contact', { qs: req.query }); // we send the query to contact pages like before datas 
+
+    query refers to the requested person and dept key value pairs 
+
+    so query would be = { 'person' : 'sami' , 'dept' = 'electrical'}
+
+    to access this in the contacts page 
+
+        we use the ejs syntax <%= query.dept%> or <%query.person %>
+
+
+
+
+ POST Request 
+
+
+    - a request method 
+
+    - ask server to accept/store data which is enclosed in the body of the request 
+
+    - often used in submitting forms
+
+
+
+    first install body parser 
+
+    by npm install body-parser
+
+
+    then we add it to out app.js file 
+
+
